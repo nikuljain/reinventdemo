@@ -5,14 +5,53 @@ Provides a professional web UI for interacting with the agent
 
 from flask import Flask, render_template, request, jsonify, Response
 import boto3
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError, ClientError
 import json
 import requests
 from datetime import datetime
+import sys
 
 app = Flask(__name__)
 
+# Configuration
+REGION = 'us-east-1'
+
+def validate_aws_credentials():
+    """Validate AWS credentials are configured and accessible"""
+    try:
+        # Create a test client to verify credentials
+        sts = boto3.client('sts', region_name=REGION)
+        identity = sts.get_caller_identity()
+        print(f"✓ AWS credentials validated")
+        print(f"  Account: {identity['Account']}")
+        print(f"  User/Role: {identity['Arn']}")
+        return True
+    except NoCredentialsError:
+        print("❌ ERROR: AWS credentials not found!")
+        print("\nPlease configure AWS credentials using one of these methods:")
+        print("  1. Run: aws configure")
+        print("  2. Set environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY")
+        print("  3. Use IAM role (if running on EC2/ECS/Lambda)")
+        return False
+    except PartialCredentialsError:
+        print("❌ ERROR: AWS credentials are incomplete!")
+        print("\nPlease ensure both AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are set.")
+        return False
+    except ClientError as e:
+        print(f"❌ ERROR: AWS credentials validation failed: {e}")
+        return False
+    except Exception as e:
+        print(f"❌ ERROR: Unexpected error validating AWS credentials: {e}")
+        return False
+
+# Validate credentials before initializing Bedrock client
+if not validate_aws_credentials():
+    print("\n⚠️  Application cannot start without valid AWS credentials.")
+    print("Please configure your credentials and restart the application.")
+    sys.exit(1)
+
 # Initialize Bedrock client
-bedrock = boto3.client('bedrock-runtime', region_name='us-east-1')
+bedrock = boto3.client('bedrock-runtime', region_name=REGION)
 
 # Tool definitions for Claude (Converse API format)
 TOOLS = [
