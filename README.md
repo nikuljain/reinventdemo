@@ -143,6 +143,7 @@ See [COST_ANALYSIS.md](COST_ANALYSIS.md) for detailed breakdown.
 - SSL certificate bypass configured for Let's Encrypt staging
 - Session-based conversation isolation
 - No data persistence (conversations in-memory)
+- Automated secrets scanning on all PRs (see [SECRETS_SCANNING.md](SECRETS_SCANNING.md))
 
 ## 🚀 Deployment Options
 
