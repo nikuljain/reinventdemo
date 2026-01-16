@@ -1,0 +1,70 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Azure Flask APIs",
+        "version": "1.0.0",
+        "description": "External Azure Flask APIs with Traefik"
+    },
+    "servers": [
+        {
+            "url": "https://api2.us-insurancesre-dev.azure.lnrsg.io"
+        }
+    ],
+    "paths": {
+        "/api1": {
+            "get": {
+                "summary": "Query Flask API 1",
+                "description": "Fetches information from Flask API 1",
+                "operationId": "getAPI1",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "text/html": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api2": {
+            "get": {
+                "summary": "Query Flask API 2",
+                "description": "Fetches information from Flask API 2",
+                "operationId": "getAPI2",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api3": {
+            "get": {
+                "summary": "Query Flask API 3",
+                "description": "Fetches information from Flask API 3",
+                "operationId": "getAPI3",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        },
+        "/api4": {
+            "get": {
+                "summary": "Query Flask API 4",
+                "description": "Fetches information from Flask API 4",
+                "operationId": "getAPI4",
+                "responses": {
+                    "200": {
+                        "description": "Successful response"
+                    }
+                }
+            }
+        }
+    }
+}
