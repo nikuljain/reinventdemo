@@ -13,11 +13,14 @@ import sys
 
 app = Flask(__name__)
 
+# Configuration
+REGION = 'us-east-1'
+
 def validate_aws_credentials():
     """Validate AWS credentials are configured and accessible"""
     try:
         # Create a test client to verify credentials
-        sts = boto3.client('sts', region_name='us-east-1')
+        sts = boto3.client('sts', region_name=REGION)
         identity = sts.get_caller_identity()
         print(f"✓ AWS credentials validated")
         print(f"  Account: {identity['Account']}")
@@ -48,7 +51,7 @@ if not validate_aws_credentials():
     sys.exit(1)
 
 # Initialize Bedrock client
-bedrock = boto3.client('bedrock-runtime', region_name='us-east-1')
+bedrock = boto3.client('bedrock-runtime', region_name=REGION)
 
 # Tool definitions for Claude (Converse API format)
 TOOLS = [

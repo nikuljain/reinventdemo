@@ -70,7 +70,7 @@ class AzureAPIAgent:
         self._validate_credentials()
         
         # Initialize Bedrock client after successful validation
-        self.bedrock = self.session.client('bedrock-runtime', region_name=region)
+        self.bedrock = self.session.client('bedrock-runtime')
         self.conversation_history = []
     
     def _validate_credentials(self):
