@@ -65,41 +65,39 @@ TOOLS = [
 
 class AzureAPIAgent:
     def __init__(self, profile='default', region=REGION):
-        # Validate AWS credentials first
-        if not self._validate_credentials(profile, region):
-            raise RuntimeError("AWS credentials validation failed. Cannot initialize agent.")
-        
+        # Create session and validate AWS credentials
         self.session = boto3.Session(profile_name=profile, region_name=region)
+        self._validate_credentials()
+        
+        # Initialize Bedrock client after successful validation
         self.bedrock = self.session.client('bedrock-runtime', region_name=region)
         self.conversation_history = []
     
-    def _validate_credentials(self, profile, region):
+    def _validate_credentials(self):
         """Validate AWS credentials are configured and accessible"""
         try:
-            session = boto3.Session(profile_name=profile, region_name=region)
-            sts = session.client('sts', region_name=region)
+            sts = self.session.client('sts')
             identity = sts.get_caller_identity()
             print(f"✓ AWS credentials validated")
             print(f"  Account: {identity['Account']}")
             print(f"  User/Role: {identity['Arn']}")
-            return True
         except NoCredentialsError:
             print("❌ ERROR: AWS credentials not found!")
             print("\nPlease configure AWS credentials using one of these methods:")
-            print(f"  1. Run: aws configure --profile {profile}")
+            print(f"  1. Run: aws configure --profile {self.session.profile_name}")
             print("  2. Set environment variables: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY")
             print("  3. Use IAM role (if running on EC2/ECS/Lambda)")
-            return False
+            raise
         except PartialCredentialsError:
             print("❌ ERROR: AWS credentials are incomplete!")
             print("\nPlease ensure both AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are set.")
-            return False
+            raise
         except ClientError as e:
             print(f"❌ ERROR: AWS credentials validation failed: {e}")
-            return False
+            raise
         except Exception as e:
             print(f"❌ ERROR: Unexpected error validating AWS credentials: {e}")
-            return False
+            raise
     
     def fetch_api_data(self, api_name: str) -> str:
         """Fetch data from specified Azure API"""

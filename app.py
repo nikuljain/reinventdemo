@@ -14,7 +14,7 @@ import sys
 app = Flask(__name__)
 
 def validate_aws_credentials():
-    """Validate AWS credentials are configured and have Bedrock access"""
+    """Validate AWS credentials are configured and accessible"""
     try:
         # Create a test client to verify credentials
         sts = boto3.client('sts', region_name='us-east-1')
