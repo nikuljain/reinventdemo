@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+  <style>
+    .card{fill:#071022;stroke:#17304a;stroke-width:1}
+    .title{fill:#7c5cff;font-family:Inter,Arial,sans-serif;font-size:16px;font-weight:700}
+    .text{fill:#e6eef8;font-family:Inter,Arial,sans-serif;font-size:13px}
+  </style>
+  <text x="40" y="36" class="title">System Components</text>
+
+  <rect x="40" y="60" width="300" height="120" class="card" rx="8"/>
+  <text x="60" y="90" class="text">Browser UI</text>
+  <text x="60" y="110" class="text">- chat.html, styles</text>
+  <text x="60" y="130" class="text">- Sends POST /api/chat</text>
+
+  <rect x="420" y="60" width="320" height="140" class="card" rx="8"/>
+  <text x="440" y="90" class="text">App Server (Flask)</text>
+  <text x="440" y="110" class="text">- Receives chat requests</text>
+  <text x="440" y="130" class="text">- Calls Bedrock converse()</text>
+  <text x="440" y="150" class="text">- Executes tool HTTP calls</text>
+
+  <rect x="780" y="60" width="320" height="140" class="card" rx="8"/>
+  <text x="800" y="90" class="text">AWS Bedrock</text>
+  <text x="800" y="110" class="text">- Models (Claude)</text>
+  <text x="800" y="130" class="text">- Supports toolUse / toolResult</text>
+
+  <rect x="420" y="240" width="680" height="200" class="card" rx="8"/>
+  <text x="440" y="270" class="text">Azure APIs</text>
+  <text x="440" y="290" class="text">- api1, api2, api3, api4</text>
+  <text x="440" y="310" class="text">- Return HTML dashboards or JSON</text>
+  <text x="440" y="330" class="text">- May require mTLS / Traefik</text>
+</svg>

@@ -1,0 +1,25 @@
+:root{
+  --bg:#0f1724; --panel:#0b1220; --muted:#9aa4b2; --accent:#7c5cff; --glass: rgba(255,255,255,0.04);
+  --success:#28a745; --danger:#ff6b6b; --card:#071022;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+}
+*{box-sizing:border-box}
+body{background:linear-gradient(180deg,#071022 0%, #081129 100%);color:#e6eef8;margin:0;padding:24px;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+.app{max-width:980px;margin:0 auto}
+.header{padding:18px 20px;background:transparent}
+.header h1{margin:0;font-size:20px}
+.header .muted{color:var(--muted);font-size:13px;margin-top:6px}
+.chat-panel{background:var(--panel);border-radius:12px;padding:18px;margin-top:12px;box-shadow:0 8px 30px rgba(5,8,15,0.6)}
+.messages{max-height:520px;overflow:auto;padding:8px;display:flex;flex-direction:column;gap:12px}
+.msg{padding:12px;border-radius:10px;background:var(--glass);backdrop-filter:blur(6px)}
+.msg.user{align-self:flex-end;background:linear-gradient(90deg,#0d1b2a,#0b2135);border:1px solid rgba(124,92,255,0.12)}
+.msg.assistant{align-self:flex-start;background:linear-gradient(90deg,#071227,#081429);border:1px solid rgba(255,255,255,0.03)}
+.msg .tool{margin-top:8px;padding:8px;background:rgba(255,255,255,0.02);border-radius:8px}
+.tool-name{font-weight:600}
+.chat-form{display:flex;gap:8px;margin-top:12px}
+.chat-form input{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+.chat-form button{padding:0 18px;border-radius:10px;border:none;background:var(--accent);color:white}
+/* Tool result card */
+.tool-card{background:linear-gradient(180deg, rgba(124,92,255,0.06), rgba(124,92,255,0.02));border:1px solid rgba(124,92,255,0.12);padding:10px;border-radius:10px;margin-top:8px}
+.card-row{font-size:13px;color:var(--muted);margin:6px 0}
+@media (max-width:600px){.app{padding:12px}.header h1{font-size:18px}}

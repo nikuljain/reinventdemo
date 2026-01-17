@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" viewBox="0 0 1200 600">
+  <style>
+    .box{fill:#0b1220;stroke:#7c5cff;stroke-width:2;rx:8;}
+    .label{fill:#e6eef8;font-family:Inter,Arial,sans-serif;font-size:14px}
+    .title{fill:#7c5cff;font-family:Inter,Arial,sans-serif;font-size:20px;font-weight:700}
+    .line{stroke:#4d8bf0;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4d8bf0" />
+    </marker>
+  </defs>
+
+  <text x="40" y="36" class="title">Reinvent Demo — Architecture</text>
+
+  <!-- User -->
+  <rect x="40" y="80" width="220" height="80" class="box" rx="8"/>
+  <text x="80" y="125" class="label">Developer / Operator</text>
+
+  <!-- Browser/UI -->
+  <rect x="320" y="60" width="240" height="120" class="box"/>
+  <text x="370" y="100" class="label">Browser UI</text>
+  <text x="370" y="120" class="label">(chat.html)</text>
+
+  <!-- Bedrock -->
+  <rect x="620" y="40" width="220" height="160" class="box"/>
+  <text x="665" y="100" class="label">AWS Bedrock</text>
+  <text x="665" y="120" class="label">(converse / tool-use)</text>
+
+  <!-- Gateway / MCP -->
+  <rect x="880" y="40" width="240" height="160" class="box"/>
+  <text x="930" y="100" class="label">AgentCore Gateway / MCP</text>
+
+  <!-- Azure APIs -->
+  <rect x="420" y="260" width="280" height="110" class="box"/>
+  <text x="470" y="300" class="label">Azure API Cluster</text>
+  <text x="470" y="320" class="label">(api1, api2, api3, api4)</text>
+
+  <!-- Connections -->
+  <line x1="260" y1="120" x2="320" y2="120" class="line"/>
+  <line x1="560" y1="120" x2="620" y2="120" class="line"/>
+  <line x1="840" y1="120" x2="880" y2="120" class="line"/>
+  <line x1="740" y1="160" x2="560" y2="320" class="line"/>
+
+  <text x="380" y="44" class="label">1. UI POST /api/chat</text>
+  <text x="700" y="28" class="label">2. Bedrock converse()</text>
+  <text x="930" y="28" class="label">3. (Optional) Gateway → MCP</text>
+  <text x="600" y="220" class="label">4. Tool HTTP calls to Azure APIs</text>
+</svg>

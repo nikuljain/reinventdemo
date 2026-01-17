@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
+  <style>
+    .lane{fill:#071022;stroke:#1f2937}
+    .actor{fill:#0b1220;stroke:#7c5cff}
+    .text{fill:#e6eef8;font-family:Inter,Arial,sans-serif;font-size:13px}
+    .line{stroke:#4d8bf0;stroke-width:2;marker-end:url(#arrow)}
+  </style>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4d8bf0" />
+    </marker>
+  </defs>
+  <text x="40" y="28" class="text" style="font-weight:700;fill:#7c5cff">Sequence: Request → Tool-use → Result</text>
+
+  <text x="120" y="60" class="text">Browser</text>
+  <text x="360" y="60" class="text">App Server (Flask)</text>
+  <text x="640" y="60" class="text">Bedrock</text>
+  <text x="920" y="60" class="text">Azure APIs</text>
+
+  <!-- arrows -->
+  <line x1="160" y1="100" x2="320" y2="100" class="line"/>
+  <text x="240" y="92" class="text">POST /api/chat</text>
+
+  <line x1="400" y1="140" x2="600" y2="140" class="line"/>
+  <text x="480" y="132" class="text">converse() (system + tools)</text>
+
+  <line x1="700" y1="180" x2="880" y2="180" class="line"/>
+  <text x="760" y="172" class="text">toolUse → GET /apiN</text>
+
+  <line x1="880" y1="220" x2="700" y2="220" class="line"/>
+  <text x="760" y="212" class="text">toolResult (HTML/JSON)</text>
+
+  <line x1="600" y1="260" x2="360" y2="260" class="line"/>
+  <text x="480" y="252" class="text">final model output (end_turn)</text>
+
+  <line x1="320" y1="300" x2="160" y2="300" class="line"/>
+  <text x="240" y="292" class="text">HTTP response → Browser</text>
+</svg>

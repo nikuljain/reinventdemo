@@ -10,6 +10,11 @@ This project demonstrates an AI-powered gateway that allows users to interact wi
 
 ## ✨ Key Features
 
+## NOTE: Using reinventdemo folder
+
+This workspace now uses the `reinventdemo` folder as the canonical demo location. Updated architecture diagrams and a concise architecture overview were added in `diagrams/` and `ARCHITECTURE_OVERVIEW.md`. To run the demo from this folder, start the usecase apps under `reinventdemo/usecase-1-direct` and `reinventdemo/usecase-2-gateway`.
+
+
 - 🗣️ **Natural Language Interface**: Ask questions in plain English
 - 🤖 **Autonomous API Selection**: AI decides which APIs to call
 - 🔧 **Tool Use Pattern**: Claude 3 Haiku with function calling
