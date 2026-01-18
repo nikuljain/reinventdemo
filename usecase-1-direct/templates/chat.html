@@ -1,82 +1,95 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Reinvent Demo — Use Case 1</title>
-    <link rel="stylesheet" href="/static/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    <div class="app">
-        <header class="header">
-            <h1>Reinvent Demo — Use Case 1 (Direct)</h1>
-            <p class="muted">Claude agent calls Azure APIs as tools and summarizes results.</p>
-        </header>
+{% extends 'layout.html' %}
 
-        <main class="chat-panel">
-            <div id="messages" class="messages"></div>
+{% block main %}
+  <div id="messages" class="messages"></div>
 
-            <form id="chatForm" class="chat-form">
-                <input id="messageInput" placeholder="Ask the agent (e.g. 'fetch data from api1')" autocomplete="off" />
-                <button type="submit">Send</button>
-            </form>
-        </main>
+  <form id="chatForm" class="chat-form">
+    <input id="messageInput" placeholder="Ask the agent (e.g. 'fetch data from api1')" autocomplete="off" />
+    <button type="submit">Send</button>
+  </form>
+{% endblock %}
+
+{% block aside %}
+  <div class="panel">
+    <div class="panel-title">Architecture</div>
+    <div class="diagram-toggle"><button id="toggle-arch-1">Hide</button></div>
+    <div id="arch-1" class="diagram small">
+      <img src="/static/diagrams/usecase1-architecture.svg" alt="Use Case 1 Architecture" onerror="this.src='/static/diagrams/usecase1-architecture.png'"/>
     </div>
+  </div>
+  <div style="height:12px"></div>
+  <div class="panel">
+    <div class="panel-title">Flow</div>
+    <div class="diagram-toggle"><button id="toggle-flow-1">Hide</button></div>
+    <div id="flow-1" class="diagram small">
+      <img src="/static/diagrams/usecase1-flow.svg" alt="Use Case 1 Flow" onerror="this.src='/static/diagrams/usecase1-flow.png'"/>
+    </div>
+  </div>
 
-    <script>
-    async function postMessage(text){
-        const res = await fetch('/api/chat', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});
-        return res.json();
-    }
+  <script>
+  async function postMessage(text){
+      const res = await fetch('/api/chat', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});
+      return res.json();
+  }
 
-    function appendMessage(role, html){
-        const container = document.getElementById('messages');
-        const el = document.createElement('div');
-        el.className = 'msg ' + role;
-        el.innerHTML = html;
-        container.appendChild(el);
-        container.scrollTop = container.scrollHeight;
-    }
+  function appendMessage(role, html){
+      const container = document.getElementById('messages');
+      const el = document.createElement('div');
+      el.className = 'msg ' + role;
+      el.innerHTML = html;
+      container.appendChild(el);
+      container.scrollTop = container.scrollHeight;
+  }
 
-    document.getElementById('chatForm').addEventListener('submit', async (e)=>{
-        e.preventDefault();
-        const input = document.getElementById('messageInput');
-        const text = input.value.trim();
-        if(!text) return;
-        appendMessage('user', '<strong>You:</strong> ' + text);
-        input.value = '';
-        const r = await postMessage(text);
-        if(r.error){
-            appendMessage('assistant','<strong>Error:</strong> '+ r.error);
-        } else {
-            appendMessage('assistant','<strong>Agent:</strong> ' + (r.response || 'No response'));
-            if(r.tools_used && r.tools_used.length){
-                // show tools list
-                const toolsHtml = r.tools_used.map(t=>`<div class=\"tool\"><div class=\"tool-name\">${t.name}</div><div class=\"tool-url\">${t.url}</div></div>`).join('');
-                appendMessage('assistant', '<div class=\"tools\"><h4>Tools called</h4>'+toolsHtml+'</div>');
-            }
+  document.getElementById('chatForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const input = document.getElementById('messageInput');
+      const text = input.value.trim();
+      if(!text) return;
+      appendMessage('user', '<strong>You:</strong> ' + text);
+      input.value = '';
+      const r = await postMessage(text);
+      if(r.error){
+          appendMessage('assistant','<strong>Error:</strong> '+ r.error);
+      } else {
+          appendMessage('assistant','<strong>Agent:</strong> ' + (r.response || 'No response'));
+          if(r.tools_used && r.tools_used.length){
+              const toolsHtml = r.tools_used.map(t=>`<div class="tool"><div class="tool-name">${t.name}</div><div class="tool-url">${t.url}</div></div>`).join('');
+              appendMessage('assistant', '<div class="tools"><h4>Tools called</h4>'+toolsHtml+'</div>');
+          }
 
-            // If the server returned parsed tool results in a separate field, render them
-            if(r._tool_results && Array.isArray(r._tool_results)){
-                r._tool_results.forEach(tr => {
-                    if(tr.parsed){
-                        const p = tr.parsed;
-                        const card = `
-                            <div class=\"tool-card\">
-                                <div class=\"card-row\"><strong>Backend:</strong> ${p.backend_service || 'n/a'}</div>
-                                <div class=\"card-row\"><strong>Traefik:</strong> ${p.traefik_version || 'n/a'}</div>
-                                <div class=\"card-row\"><strong>mTLS:</strong> ${p.mtls ? 'yes' : 'no'}</div>
-                                <div class=\"card-row\"><strong>Headers:</strong> ${p.custom_headers_count || 'n/a'}</div>
-                                <div class=\"card-row\"><strong>Proxies:</strong> ${p.proxy_ips || 'n/a'}</div>
-                                <div class=\"card-row\"><strong>Summary:</strong> ${p.summary || ''}</div>
-                            </div>`;
-                        appendMessage('assistant', card);
-                    }
-                });
-            }
-        }
-    });
-    </script>
-</body>
-</html>
+          if(r._tool_results && Array.isArray(r._tool_results)){
+              r._tool_results.forEach(tr => {
+                  if(tr.parsed){
+                      const p = tr.parsed;
+                      const card = `
+                          <div class="tool-card">
+                              <div class="card-row"><strong>Backend:</strong> ${p.backend_service || 'n/a'}</div>
+                              <div class="card-row"><strong>Traefik:</strong> ${p.traefik_version || 'n/a'}</div>
+                              <div class="card-row"><strong>mTLS:</strong> ${p.mtls ? 'yes' : 'no'}</div>
+                              <div class="card-row"><strong>Headers:</strong> ${p.custom_headers_count || 'n/a'}</div>
+                              <div class="card-row"><strong>Proxies:</strong> ${p.proxy_ips || 'n/a'}</div>
+                              <div class="card-row"><strong>Summary:</strong> ${p.summary || ''}</div>
+                          </div>`;
+                      appendMessage('assistant', card);
+                  }
+              });
+          }
+      }
+  });
+  // Diagram toggles
+  document.getElementById('toggle-arch-1').addEventListener('click', ()=>{
+    const el = document.getElementById('arch-1');
+    const btn = document.getElementById('toggle-arch-1');
+    el.classList.toggle('collapsed');
+    btn.textContent = el.classList.contains('collapsed') ? 'Show' : 'Hide';
+  });
+  document.getElementById('toggle-flow-1').addEventListener('click', ()=>{
+    const el = document.getElementById('flow-1');
+    const btn = document.getElementById('toggle-flow-1');
+    el.classList.toggle('collapsed');
+    btn.textContent = el.classList.contains('collapsed') ? 'Show' : 'Hide';
+  });
+  </script>
+
+{% endblock %}

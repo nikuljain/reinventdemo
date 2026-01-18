@@ -22,20 +22,21 @@ print(f'Configuring targets on gateway {gateway_id}...')
 print('\n1. Setting up credential provider...')
 try:
     providers = client.list_api_key_credential_providers()
-    provider_id = None
-    for provider in providers.get('items', []):
-        if provider['displayName'] == CREDENTIAL_PROVIDER_NAME:
-            provider_id = provider['credentialProviderIdentifier']
-            print(f'✓ Credential provider exists: {provider_id}')
+    provider_arn = None
+    for provider in providers.get('credentialProviders', []):
+        if provider.get('name') == CREDENTIAL_PROVIDER_NAME:
+            provider_arn = provider.get('credentialProviderArn') or provider.get('providerArn')
+            print(f'✓ Credential provider exists: {provider_arn}')
             break
-    
-    if not provider_id:
+
+    if not provider_arn:
+        # API expects 'name' and 'apiKey'
         response = client.create_api_key_credential_provider(
-            displayName=CREDENTIAL_PROVIDER_NAME,
-            apiKeyIdentifier='x-api-key'
+            name=CREDENTIAL_PROVIDER_NAME,
+            apiKey='x-api-key'
         )
-        provider_id = response['credentialProviderIdentifier']
-        print(f'✓ Created credential provider: {provider_id}')
+        provider_arn = response.get('credentialProviderArn') or response.get('providerArn') or response.get('arn')
+        print(f'✓ Created credential provider: {provider_arn}')
 except Exception as e:
     print(f'⚠️  Credential provider error: {e}')
     provider_id = None
@@ -82,14 +83,31 @@ for target_name, endpoint, description in api_targets:
         
         # Check if target exists
         targets = client.list_gateway_targets(gatewayIdentifier=gateway_id)
-        target_exists = any(t['displayName'] == target_name for t in targets.get('items', []))
+        target_exists = any(t.get('name') == target_name or t.get('displayName') == target_name for t in targets.get('items', []))
         
         if target_exists:
             print(f'  ✓ {target_name} (already registered)')
         else:
+            # API expects 'name' (not displayName)
+            # The API expects credentialProviderConfigurations as a list of structures
+            # with 'credentialProviderType' and nested 'credentialProvider' structure.
+            cpcs = []
+            if provider_arn:
+                cpcs = [
+                    {
+                        'credentialProviderType': 'API_KEY',
+                        'credentialProvider': {
+                            'apiKeyCredentialProvider': {
+                                'providerArn': provider_arn
+                            }
+                        }
+                    }
+                ]
+
             response = client.create_gateway_target(
                 gatewayIdentifier=gateway_id,
-                displayName=target_name,
+                name=target_name,
+                description=description,
                 targetConfiguration={
                     'mcp': {
                         'openApiSchema': {
@@ -97,12 +115,7 @@ for target_name, endpoint, description in api_targets:
                         }
                     }
                 },
-                credentialProviderConfigurations=[
-                    {
-                        'role': 'TARGET_ENDPOINT_PROVIDER',
-                        'credentialProviderIdentifier': provider_id
-                    }
-                ] if provider_id else []
+                credentialProviderConfigurations=cpcs
             )
             print(f'  ✓ {target_name} registered')
     except Exception as e:

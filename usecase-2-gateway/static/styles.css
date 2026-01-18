@@ -1,22 +1,40 @@
 :root{
-  --bg:#0f1724; --panel:#0b1220; --muted:#9aa4b2; --accent:#7c5cff; --glass: rgba(255,255,255,0.04);
-  --success:#28a745; --danger:#ff6b6b; --card:#071022;
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --muted: #6b7280;
+  --accent: #10a37f;
+  --glass: rgba(16,163,127,0.06);
+  --success: #10b981;
+  --danger: #ef4444;
+  --card: #ffffff;
+  --shadow: 0 10px 30px rgba(16,24,40,0.06);
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
 *{box-sizing:border-box}
-body{background:linear-gradient(180deg,#071022 0%, #081129 100%);color:#e6eef8;margin:0;padding:24px;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-.app{max-width:980px;margin:0 auto}
-.header{padding:18px 20px;background:transparent}
-.header h1{margin:0;font-size:20px}
-.header .muted{color:var(--muted);font-size:13px;margin-top:6px}
-.chat-panel{background:var(--panel);border-radius:12px;padding:18px;margin-top:12px;box-shadow:0 8px 30px rgba(5,8,15,0.6)}
-.messages{max-height:520px;overflow:auto;padding:8px;display:flex;flex-direction:column;gap:12px}
-.msg{padding:12px;border-radius:10px;background:var(--glass);backdrop-filter:blur(6px)}
-.msg.user{align-self:flex-end;background:linear-gradient(90deg,#0d1b2a,#0b2135);border:1px solid rgba(124,92,255,0.12)}
-.msg.assistant{align-self:flex-start;background:linear-gradient(90deg,#071227,#081429);border:1px solid rgba(255,255,255,0.03)}
-.msg .tool{margin-top:8px;padding:8px;background:rgba(255,255,255,0.02);border-radius:8px}
-.tool-name{font-weight:600}
+body{background:linear-gradient(180deg,#f8fafc 0%, #eef6ff 100%);color:#0f1724;margin:0;padding:28px;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+.app{max-width:1200px;margin:0 auto}
+.header{padding:18px 20px;background:transparent;display:flex;align-items:center}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7dd3fc);object-fit:cover}
+.brand-text h1{margin:0;font-size:20px;color:var(--accent)}
+.brand-text .muted{color:var(--muted);font-size:13px;margin-top:4px}
+.main-grid{display:grid;grid-template-columns:1fr 320px;gap:18px;margin-top:18px}
+.left-panel{background:var(--panel);border-radius:10px;padding:16px;box-shadow:var(--shadow)}
+.right-panel{background:var(--panel);border-radius:10px;padding:14px;box-shadow:var(--shadow);height:fit-content}
+.messages{max-height:62vh;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:12px}
+.msg{padding:12px;border-radius:10px;background:var(--card);border:1px solid rgba(15,23,42,0.04)}
+.msg.user{align-self:flex-end;background:linear-gradient(90deg,#eef2ff,#f8fafc);border:1px solid rgba(43,110,246,0.12)}
+.msg.assistant{align-self:flex-start;background:linear-gradient(90deg,#ffffff,#f8fafc);border:1px solid rgba(15,23,42,0.04)}
 .chat-form{display:flex;gap:8px;margin-top:12px}
-.chat-form input{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
-.chat-form button{padding:0 18px;border-radius:10px;border:none;background:var(--accent);color:white}
-@media (max-width:600px){.app{padding:12px}.header h1{font-size:18px}}
+.chat-form input{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(15,23,42,0.06);background:transparent;color:inherit}
+.chat-form button{padding:10px 18px;border-radius:10px;border:none;background:var(--accent);color:white;font-weight:600}
+.tool-card{background:linear-gradient(180deg, rgba(16,163,127,0.03), rgba(16,163,127,0.01));border:1px solid rgba(16,163,127,0.06);padding:12px;border-radius:10px;margin-top:8px}
+.card-row{font-size:13px;color:var(--muted);margin:6px 0}
+.diagram{width:100%;border-radius:8px;border:1px solid rgba(16,24,40,0.04);box-shadow:0 6px 18px rgba(16,24,40,0.04);background:#fbffff;padding:8px;display:flex;align-items:center;justify-content:center}
+.diagram img{max-width:100%;max-height:260px;border-radius:6px}
+.diagram.small img{max-height:180px}
+.diagram-toggle{display:flex;justify-content:flex-end;margin-bottom:8px}
+.diagram-toggle button{background:transparent;border:none;color:var(--accent);font-weight:600;cursor:pointer}
+.diagram.collapsed{height:48px;padding:6px;overflow:hidden}
+.panel-title{font-size:14px;color:#0f1724;margin-bottom:8px}
+@media (max-width:1000px){.main-grid{grid-template-columns:1fr} .right-panel{order:2}.left-panel{order:1}}

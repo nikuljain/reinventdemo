@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ title or 'Reinvent Demo' }}</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="brand">
+        <img src="/static/logo-light.svg" alt="logo" class="logo"/>
+        <div class="brand-text">
+          <h1>{{ title or 'Reinvent Demo' }}</h1>
+          <p class="muted">{{ subtitle or '' }}</p>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <section class="left-panel">
+        {% block main %}{% endblock %}
+      </section>
+      <aside class="right-panel">
+        {% block aside %}{% endblock %}
+      </aside>
+    </main>
+  </div>
+  <script>window.onload = function(){document.body.classList.add('loaded')}</script>
+</body>
+</html>

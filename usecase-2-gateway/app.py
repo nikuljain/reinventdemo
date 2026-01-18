@@ -85,18 +85,104 @@ def index():
 
 
 def invoke_claude(messages):
-    """Call Bedrock (via gateway if configured) using converse API"""
+    """Call Bedrock via AgentCore gateway when configured,
+    otherwise fall back to direct mode.
+    """
     system_prompt = "You are a helpful API analyst. Use the provided tools to fetch data from Azure APIs and provide insights."
+
+    # If gateway endpoint is configured, use bedrock-agentcore InvokeAgentRuntime
+    if GATEWAY_ENDPOINT and GATEWAY_ID:
+        try:
+            import boto3
+            
+            # Use bedrock-agentcore client for gateway invocation
+            agentcore_client = boto3.client('bedrock-agentcore', region_name='us-east-1')
+            
+            # Build MCP JSON-RPC payload for converse
+            mcp_payload = {
+                'jsonrpc': '2.0',
+                'id': 1,
+                'method': 'bedrock/converse',
+                'params': {
+                    'modelId': MODEL_ID,
+                    'system': [{'text': system_prompt}],
+                    'messages': messages,
+                    'toolConfig': {'tools': TOOLS},
+                    'inferenceConfig': {'maxTokens': 1024}
+                }
+            }
+            
+            # Construct gateway ARN from ID
+            gateway_arn = f'arn:aws:bedrock-agentcore:us-east-1:846069303018:gateway/{GATEWAY_ID}'
+            
+            # Invoke gateway with MCP protocol
+            response = agentcore_client.invoke_agent_runtime(
+                agentRuntimeArn=gateway_arn,
+                mcpProtocolVersion='2025-11-25',
+                contentType='application/json',
+                accept='application/json',
+                payload=json.dumps(mcp_payload).encode('utf-8')
+            )
+            
+            # Parse response body
+            response_body = response['payload'].read().decode('utf-8')
+            result = json.loads(response_body)
+            
+            # Check for JSON-RPC error
+            if 'error' in result:
+                return {
+                    'stopReason': 'completed',
+                    'output': {'message': {'content': [{'text': f"Gateway error: {json.dumps(result['error'])}"}]}}
+                }
+            
+            # Extract result and map to expected format
+            mcp_result = result.get('result', {})
+            if 'stopReason' in mcp_result and 'output' in mcp_result:
+                return mcp_result
+            
+            # Return raw result if format unexpected
+            return {
+                'stopReason': 'completed',
+                'output': {'message': {'content': [{'text': json.dumps(result)}]}}
+            }
+            
+        except Exception as e:
+            import traceback
+            return {
+                'stopReason': 'completed',
+                'output': {'message': {'content': [{'text': f'Gateway invocation failed: {e}\n{traceback.format_exc()[:800]}'}]}}
+            }
+
+    # Fallback: make a runtime invoke_model call (local/demo mode)
+    text_input = system_prompt + '\n' + '\n'.join([m.get('content', [{}])[0].get('text', '') for m in messages])
+    payload = {
+        'modelId': MODEL_ID,
+        'body': text_input.encode('utf-8'),
+        'contentType': 'text/plain'
+    }
+
+    try:
+        resp = bedrock.invoke_model(**payload)
+        out = {
+            'stopReason': 'completed',
+            'output': {'message': {'content': []}}
+        }
+        try:
+            body = resp.get('body')
+            if hasattr(body, 'read'):
+                txt = body.read().decode('utf-8')
+            else:
+                txt = str(body)
+        except Exception:
+            txt = str(resp)
+        out['output']['message']['content'].append({'text': txt})
+        return out
+    except Exception as e:
+        return {
+            'stopReason': 'completed',
+            'output': {'message': {'content': [{'text': f'Runtime invoke failed: {e}'}]}}
+        }
     
-    response = bedrock.converse(
-        modelId=MODEL_ID,
-        system=[{'text': system_prompt}],
-        messages=messages,
-        toolConfig={'tools': TOOLS},
-        inferenceConfig={'maxTokens': 1024}
-    )
-    
-    return response
 
 
 def sanitize_messages(messages):
@@ -209,8 +295,15 @@ def chat():
                 print('Failed to write conv debug:', _ex)
 
             response = invoke_claude(sanitized)
-            stop_reason = response['stopReason']
-            content = response['output']['message']['content']
+            
+            # Handle gateway response - may not have stopReason if error occurred
+            if not isinstance(response, dict):
+                response = {'stopReason': 'completed', 'output': {'message': {'content': [{'text': str(response)}]}}}
+            
+            stop_reason = response.get('stopReason', 'completed')
+            output = response.get('output', {})
+            message = output.get('message', {})
+            content = message.get('content', [{'text': 'No content returned'}])
             
             conversations[session_id].append({
                 'role': 'assistant',

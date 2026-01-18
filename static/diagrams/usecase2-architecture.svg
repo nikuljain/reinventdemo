@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600">
+  <rect width="100%" height="100%" fill="#f8fbff"/>
+  <text x="50" y="60" font-size="28" fill="#0f1724">Use Case 2 — Gateway</text>
+  <rect x="80" y="120" width="260" height="120" rx="12" fill="#fff" stroke="#cfe8ff"/>
+  <text x="110" y="160" font-size="16" fill="#0f1724">Client</text>
+  <rect x="380" y="120" width="260" height="120" rx="12" fill="#fff" stroke="#cfe8ff"/>
+  <text x="420" y="160" font-size="16" fill="#0f1724">Gateway</text>
+  <rect x="700" y="120" width="360" height="120" rx="12" fill="#fff" stroke="#cfe8ff"/>
+  <text x="740" y="160" font-size="16" fill="#0f1724">Bedrock / AgentCore</text>
+  <rect x="80" y="300" width="980" height="140" rx="12" fill="#fff" stroke="#cfe8ff"/>
+  <text x="100" y="340" font-size="16" fill="#0f1724">Azure APIs (ingress, services)</text>
+  <line x1="340" y1="180" x2="380" y2="180" stroke="#2b6ef6" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="640" y1="180" x2="700" y2="180" stroke="#2b6ef6" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="820" y1="240" x2="820" y2="300" stroke="#2b6ef6" stroke-width="3" marker-end="url(#arrow)"/>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2b6ef6" />
+    </marker>
+  </defs>
+</svg>

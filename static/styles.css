@@ -11,7 +11,7 @@
   font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
 *{box-sizing:border-box}
-body{background:linear-gradient(180deg,#f8fafc 0%, #eef6ff 100%);color:#0f1724;margin:0;padding:28px;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+body{background:linear-gradient(180deg,#f8fbff 0%, #eef6ff 100%);color:#0f1724;margin:0;padding:28px;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
 .app{max-width:1200px;margin:0 auto}
 .header{padding:18px 20px;background:transparent;display:flex;align-items:center}
 .brand{display:flex;gap:12px;align-items:center}
